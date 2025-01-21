@@ -1,4 +1,8 @@
-"""PyAudio Example: Play a wave file."""
+"""PyAudio Example: Play a wave file.
+
+Example from https://people.csail.mit.edu/hubert/pyaudio/docs/
+
+"""
 
 import wave
 import sys
