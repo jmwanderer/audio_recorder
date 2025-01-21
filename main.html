@@ -1,0 +1,28 @@
+<html>
+    <body>
+        <h1>Audio Files</h1>
+        <form action="" method="post">
+            {%if recording %}
+            Recording Enabled &nbsp&nbsp <button type='submit' name='record' value='stop'>Disable Recording</button>
+            {% else %}
+            Recording Disabled  &nbsp&nbsp <button type='submit' name='record' value='start'>Enable Recording</button>
+            {% endif %}
+        </form>
+        <table cellpadding="15">
+            {% for entry in entries %}
+            <tr>
+                <td>{{ entry["timestamp"].strftime("%A, %d %B %Y %I:%M%p") }}</td>
+                <td>{{ entry["length"] }}s</td>
+                <td><audio src='./file/{{ entry["basename"] }}' controls='' controlslist='nodownload'></audio></td>
+                <td><a href='./file/{{ entry["basename"] }}'>Download</a></td>
+                <td>
+                    <form action="/file/{{ entry['basename'] }}" method="post">
+                        <button type="submit" name="action" value="delete">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <form>
+    </body>
+</html>

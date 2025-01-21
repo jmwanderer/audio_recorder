@@ -1,0 +1,16 @@
+[Unit]
+Description=Audio Server Web Interface
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=pi
+WorkingDirectory=/home/pi/smon
+Environment="PATH=/bin:/usr/bin"
+ExecStart=bash -c ". venv/bin/activate;python web_server.py"
+
+
+[Install]
+WantedBy=multi-user.target

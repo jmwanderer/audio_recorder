@@ -1,0 +1,21 @@
+[Unit]
+Description=Audio Recorder Service
+After=sound.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=pi
+WorkingDirectory=/home/pi/smon
+Environment="PATH=/bin:/usr/bin"
+ExecStart=bash -c ". venv/bin/activate;python3 auto_record.py"
+
+
+[Install]
+WantedBy=multi-user.target
+
+# Note: required /etc/asound.conf to be configured
+# cat /proc/asound/cards
+# See: https://forums.raspberrypi.com/viewtopic.php?t=278665
+# Perhaps no default sound device when running as a service?

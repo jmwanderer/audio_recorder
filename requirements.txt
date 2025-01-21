@@ -1,0 +1,4 @@
+# Note: pyaudo needs the development libraries for portaudio19 and python3
+fastapi[standard]
+pyaudio
+
