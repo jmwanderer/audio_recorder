@@ -1,4 +1,9 @@
-"""PyAudio Example: Record a few seconds of audio and save to a wave file."""
+"""PyAudio Example: Record a few seconds of audio and save to a wave file.
+
+
+Based on example script from:
+https://people.csail.mit.edu/hubert/pyaudio/docs/
+"""
 
 import wave
 import sys
