@@ -32,7 +32,7 @@ def convert(filename: str) -> np.ndarray:
 def read_data_blocks(filename: str) -> list[auto_record.AudioDataBlock]:
     result = []
     with wave.open(filename, 'rb') as wf:
-        while len(data := wf.readframes(1000)) > 0:
+        while len(data := wf.readframes(500)) > 0:
             block = auto_record.AudioDataBlock(data)
             result.append(block)
     return result
