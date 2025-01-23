@@ -153,6 +153,41 @@ sudo rm /lib/systemd/system/auto_record.service
 sudo rm /lib/systemd/system/auto_record_server.service 
 ```
 
+## Further Work
+
+There are a few areas where the audio recorder could likey use improvement.
+
+### Select an Audio Device
+
+The auto_record.py script opens the default sound input device. When run 
+from a desktop environment, this is usually configured correctly. However
+when starting from systemd for an automatic boot, the script may pick the
+wrong device. A few to pass in a device name may be useful.
+
+### Criteria to Start Recordings
+
+The criteria for starting a recording is very simplistic. There may be better
+ways to detect when to start the recording.
+
+### Convert WAVE Files to MP3
+
+WAVE files are large and require a great deal of storage. Any application
+that collects a significant number of hours of recording would benefit
+from a feature that converts WAVE files to MP3 files.
+
+
+### Cotrol Calibration via Web Browser
+
+Once the auto recording script is configured to start on boot, it is 
+inconvenient to run a calibration. You need to stop the service, run the
+calibraiton from the command line, and then restart the service. It would
+be useful to invoke calibration via the web server interface.
+
+It also isn't clear that the environments running at boot time and
+from the command line are the same and would produce the same
+calibration values.
+
+
 ## Graphing Sound Files
 
 It is facinating to look at sound files graphically to understand the nature
