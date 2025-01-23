@@ -1,3 +1,11 @@
+"""
+A simple fast-api based web server to serve audio files.
+
+- one main.html page with
+  * A list of audio files
+  * The recording enabled status
+  * A button to toggel recording enabled
+"""
 import datetime
 import json
 import logging
@@ -14,12 +22,17 @@ import uvicorn
 
 import auto_record
 
-
+# Initialize fast api and logging
 app = FastAPI()
 templates = Jinja2Templates(directory=".")
 logger = logging.getLogger("uvicorn.error")
 
+
 def get_file_list():
+    """
+    Read the contents of the JSON information files in the data directory
+    and return list of dictionary elements sorted by the timestamp.
+    """
     result = []
     logger.debug("get file list")
     entries = os.listdir(auto_record.DATA_DIR)
