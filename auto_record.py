@@ -333,7 +333,7 @@ class AutoRecordSession:
         
         now = datetime.datetime.now()
         self.open_time = now
-        self.out_file_name = "%04d-%02d-%02d_%02d:%02d:%02d" % (
+        self.out_file_name = "%04d-%02d-%02d_%02d_%02d_%02d" % (
             now.year, now.month, now.day, now.hour, now.minute, now.second
         ) 
 
