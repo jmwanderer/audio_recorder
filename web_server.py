@@ -12,7 +12,7 @@ import logging
 import logging.handlers
 import os
 from typing import Annotated
-from typing import Any
+from typing import Any, Tuple, Union
 
 from fastapi import FastAPI, Request, Form, HTTPException
 from fastapi.responses import HTMLResponse, Response, RedirectResponse
@@ -49,7 +49,7 @@ def get_file_list():
     result.sort(key=lambda e: e["timestamp"], reverse=True)
     return result
 
-def lookup_file(basename: str) -> dict[str, Any]|None:
+def lookup_file(basename: str) -> Union[dict[str, Any], None]:
     """
     Find a wav file for basename, return the wav filename
     Return None if not found
