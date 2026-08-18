@@ -1,6 +1,6 @@
 """
-Monitor the default audio input and record active sounds. 
-Trigger recording on 0.25 sec of sound, stop recording after 5s of silence.
+Monitor the default audio input and record active sounds.
+Trigger recording on 0.25 sec of sound, stop recording after 10s of silence.
 Silence is a sustained noise level that does not meet the defined threshold.
 
 Generate seperate WAVE files for each active recording.
@@ -143,7 +143,11 @@ class AutoRecordSession:
             file = open(self.calibration_file(), 'r')
             value = file.read()
             file.close()
-            value = float(value)
+            try:
+                value = float(value)
+            except ValueError:
+                logger.warning("Ignoring unreadable calibration file value: %r" % value)
+                value = 0
             if value > 0:
                 logger.info("Setting threshold to %f" % value)
                 self.noise_threashold = value
@@ -226,6 +230,15 @@ class AutoRecordSession:
             # Interupted, complete current recording
             if self.is_recording:
                 self.stop_recording()
+        except Exception:
+            # Unexpected error (e.g. audio device issue). Finish any
+            # in-process recording and release resources before re-raising
+            # so systemd can restart the service cleanly.
+            logger.exception("Unexpected error in main loop")
+            if self.is_recording:
+                self.stop_recording()
+            self.cleanup_session()
+            raise
         self.cleanup_session()
 
     def start_recording(self) -> None:

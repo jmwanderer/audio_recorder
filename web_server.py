@@ -12,11 +12,10 @@ import logging
 import logging.handlers
 import os
 from typing import Annotated
-from typing import Any, Tuple, Union
+from typing import Any, Union
 
 from fastapi import FastAPI, Request, Form, HTTPException
 from fastapi.responses import HTMLResponse, Response, RedirectResponse
-from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import uvicorn
 
@@ -117,7 +116,7 @@ def post_record(record: Annotated[str, Form()]):
         set_record_setting(True)
     else:
         set_record_setting(False)
-    return RedirectResponse("/", status_code=301)
+    return RedirectResponse("/", status_code=303)
 
 
 
@@ -136,7 +135,7 @@ def post_file(filename: str, action: Annotated[str, Form()]):
         logger.info(f"delete {filename}")
         os.remove(sound_file_path)
         os.remove(json_file_path)
-    return RedirectResponse("/", status_code=301)
+    return RedirectResponse("/", status_code=303)
 
 LOGGING_CONFIG = {
     'version': 1,

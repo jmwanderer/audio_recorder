@@ -44,8 +44,8 @@ def write_array(filename: str, array: np.ndarray) -> None:
     """
     Use np.savetxt to write the array to a CSV file
     """
-    print(f"Write file: {filename_csv}")
-    np.savetxt(filename_csv, array, delimiter=",")
+    print(f"Write file: {filename}")
+    np.savetxt(filename, array, delimiter=",")
     print("Done")
 
 def plot_array(array: np.ndarray) -> None:
