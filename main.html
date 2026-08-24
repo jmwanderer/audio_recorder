@@ -5,10 +5,6 @@
     <body>
         <h1>Audio Files</h1>
         {% include "recording.html" %}
-        <table cellpadding="15">
-            {% for entry in entries %}
-            {% include "row.html" %}
-            {% endfor %}
-        </table>
+        {% include "day.html" %}
     </body>
 </html>

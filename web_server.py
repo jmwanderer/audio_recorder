@@ -12,7 +12,7 @@ import logging
 import logging.handlers
 import os
 from typing import Annotated
-from typing import Any, Union
+from typing import Any, Optional, Union
 
 from fastapi import FastAPI, Request, Form, HTTPException
 from fastapi.responses import HTMLResponse, Response, RedirectResponse
@@ -105,17 +105,29 @@ def set_record_setting(recording: bool):
 
 
 @app.get("/", response_class=HTMLResponse)
-def main_page(request: Request):
+def main_page(request: Request, date: Optional[str] = None):
     """
     Serve root page using main.html
-    List of recordings
+    List of recordings for a single day, defaulting to today, with
+    controls to navigate to the previous/next day.
     """
+    day = datetime.date.fromisoformat(date) if date else datetime.date.today()
     recording = get_record_setting()
-    entries = get_file_list()
+    all_entries = get_file_list()
+    entries = [e for e in all_entries if e["timestamp"].date() == day]
+
+    # Only offer navigation to days that actually have recordings
+    dates = { e["timestamp"].date() for e in all_entries }
+    prev_day = max((d for d in dates if d < day), default=None)
+    next_day = min((d for d in dates if d > day), default=None)
+
     return templates.TemplateResponse(
-        request=request, name="main.html", 
+        request=request, name="main.html",
         context={"entries": entries,
-                 "recording": recording}
+                 "recording": recording,
+                 "day": day,
+                 "prev_day": prev_day.isoformat() if prev_day else None,
+                 "next_day": next_day.isoformat() if next_day else None}
     )
 
 @app.get("/file/{filename}", response_class=HTMLResponse)

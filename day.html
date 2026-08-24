@@ -1,0 +1,12 @@
+<div id="day-section" hx-target="this" hx-swap="outerHTML">
+    <div>
+        <button {% if prev_day %}hx-get="/?date={{ prev_day }}" hx-select="#day-section" hx-push-url="true"{% else %}disabled{% endif %}>&laquo; Previous Day</button>
+        <strong>{{ day.strftime("%A, %d %B %Y") }}</strong>
+        <button {% if next_day %}hx-get="/?date={{ next_day }}" hx-select="#day-section" hx-push-url="true"{% else %}disabled{% endif %}>Next Day &raquo;</button>
+    </div>
+    <table cellpadding="15">
+        {% for entry in entries %}
+        {% include "row.html" %}
+        {% endfor %}
+    </table>
+</div>
