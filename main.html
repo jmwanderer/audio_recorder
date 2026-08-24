@@ -7,24 +7,7 @@
         {% include "recording.html" %}
         <table cellpadding="15">
             {% for entry in entries %}
-            <tr hx-target="this" hx-swap="outerHTML">
-                <td>{{ entry["timestamp"].strftime("%A, %d %B %Y %I:%M%p") }}</td>
-                <td>{{ entry["length"] }}s</td>
-                <td><audio src='./file/{{ entry["basename"] }}' controls='' controlslist='nodownload'></audio></td>
-                <td><a href='./file/{{ entry["basename"] }}'>Download</a></td>
-                <td>
-                    <button hx-post="/file/{{ entry['basename'] }}" name="action" value="delete">Delete</button>
-                </td>
-                <td>
-                    <button hx-post="/file/{{ entry['basename'] }}" name="action" value="airplane">Airplane</button>
-                </td>
-                <td>
-                    <button hx-post="/file/{{ entry['basename'] }}" name="action" value="dog">Dog</button>
-                </td>
-                <td>
-                    <button hx-post="/file/{{ entry['basename'] }}" name="action" value="siren">Siren</button>
-                </td>
-            </tr>
+            {% include "row.html" %}
             {% endfor %}
         </table>
     </body>

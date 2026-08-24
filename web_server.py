@@ -26,6 +26,9 @@ app = FastAPI()
 templates = Jinja2Templates(directory=".")
 logger = logging.getLogger("uvicorn.error")
 
+# Category subdirectories under DATA_DIR that a recording can be classified into
+CLASSES = [ "airplane", "dog", "siren" ]
+
 
 def clean_files():
     for entry in os.listdir(auto_record.DATA_DIR):
@@ -41,21 +44,32 @@ def clean_files():
 def get_file_list():
     """
     Read the contents of the JSON information files in the data directory
-    and return list of dictionary elements sorted by the timestamp.
+    and its category subdirectories, and return list of dictionary elements
+    sorted by the timestamp.
     """
     result = []
     logger.debug("get file list")
-    entries = os.listdir(auto_record.DATA_DIR)
-    for entry in entries:
-        if entry.endswith(".json"):
-            path = os.path.join(auto_record.DATA_DIR, entry)
-            f = open(path, 'r')
-            info = json.loads(f.read())
-            f.close()
+    dirs = [auto_record.DATA_DIR] + [
+        os.path.join(auto_record.DATA_DIR, c) for c in CLASSES
+    ]
+    for dir_path in dirs:
+        if not os.path.isdir(dir_path):
+            continue
+        for entry in os.listdir(dir_path):
+            if entry.endswith(".json"):
+                path = os.path.join(dir_path, entry)
+                f = open(path, 'r')
+                info = json.loads(f.read())
+                f.close()
 
-            # Change timestamp from text to datetime.dateime
-            info["timestamp"] = datetime.datetime.fromisoformat(info["timestamp"])
-            result.append(info)
+                # Change timestamp from text to datetime.dateime
+                info["timestamp"] = datetime.datetime.fromisoformat(info["timestamp"])
+
+                # Record where the file actually lives, based on where it was
+                # found. Not persisted - the "category" field, not this, is
+                # what's saved to the sidecar.
+                info["dir"] = dir_path
+                result.append(info)
     result.sort(key=lambda e: e["timestamp"], reverse=True)
     return result
 
@@ -111,14 +125,14 @@ def read_file(filename, request: Request):
     """
     entry = lookup_file(filename)
     if entry is not None:
-        path = os.path.join(auto_record.DATA_DIR, entry["sound_file"])
+        path = os.path.join(entry["dir"], entry["sound_file"])
         with open(path, 'rb') as file:
             data = file.read()
             return Response(content=data, media_type='audio/wav')
     raise HTTPException(status_code=404)
 
 
-@app.post("/", response_class=RedirectResponse)
+@app.post("/", response_class=HTMLResponse)
 def post_record(request: Request, record: Annotated[str, Form()]):
     """
     Handle enable and disable recording.
@@ -136,34 +150,47 @@ def post_record(request: Request, record: Annotated[str, Form()]):
     )
 
 
-@app.post("/file/{filename}", response_class=RedirectResponse)
-def post_file(filename: str, action: Annotated[str, Form()]):
+@app.post("/file/{filename}", response_class=HTMLResponse)
+def post_file(request: Request, filename: str, action: Annotated[str, Form()]):
     """
     Handle update for a file
     """
     entry = lookup_file(filename)
     if entry is None:
         raise HTTPException(status_code=404)
-    sound_file_path = os.path.join(auto_record.DATA_DIR, entry["sound_file"])
-    json_file_path = os.path.join(auto_record.DATA_DIR, entry["json_file"])
+    sound_file_path = os.path.join(entry["dir"], entry["sound_file"])
+    json_file_path = os.path.join(entry["dir"], entry["json_file"])
 
     if action == "delete":
         logger.info(f"delete {filename}")
         os.remove(sound_file_path)
         os.remove(json_file_path)
+        return Response(status_code=200)
 
-    classes = [ "airplane", "dog", "siren" ]
-    if action in classes:
+    if action in CLASSES:
         logger.info(f"move {filename} to {action}")
         class_path = os.path.join(auto_record.DATA_DIR, action)
         os.makedirs(class_path, exist_ok=True)
 
+        with open(json_file_path, 'r') as f:
+            info = json.load(f)
+        info["category"] = action
+        with open(json_file_path, 'w') as f:
+            json.dump(info, f)
+
         new_sound_path = os.path.join(class_path, entry["sound_file"])
         new_json_path = os.path.join(class_path, entry["json_file"])
-        os.rename(sound_file_path, new_sound_path) 
-        os.rename(json_file_path, new_json_path) 
+        os.rename(sound_file_path, new_sound_path)
+        os.rename(json_file_path, new_json_path)
 
-    return ""
+        entry["category"] = action
+        return templates.TemplateResponse(
+            request=request,
+            name="row.html",
+            context={"entry": entry}
+        )
+
+    return Response(status_code=200)
 
 LOGGING_CONFIG = {
     'version': 1,

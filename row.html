@@ -1,0 +1,23 @@
+<tr hx-target="this" hx-swap="outerHTML">
+    <td>
+        {% if entry.get("category") == "airplane" %}&#9992;&#65039;
+        {% elif entry.get("category") == "dog" %}&#128021;
+        {% elif entry.get("category") == "siren" %}&#128680;
+        {% endif %}
+    </td>
+    <td>{{ entry["timestamp"].strftime("%A, %d %B %Y %I:%M%p") }}</td>
+    <td>{{ entry["length"] }}s</td>
+    <td><audio src='./file/{{ entry["basename"] }}' controls='' controlslist='nodownload'></audio></td>
+    <td><a href='./file/{{ entry["basename"] }}'>Download</a></td>
+    <td>
+        <button hx-post="/file/{{ entry['basename'] }}" name="action" value="delete">Delete</button>
+    </td>
+    <td>
+        <select name="action">
+            <option value="airplane">Airplane</option>
+            <option value="dog">Dog</option>
+            <option value="siren">Siren</option>
+        </select>
+        <button hx-post="/file/{{ entry['basename'] }}" hx-include="previous select">Set Category</button>
+    </td>
+</tr>
