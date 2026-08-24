@@ -7,7 +7,18 @@
         <div class="container my-4">
             <h1 class="mb-4">Audio Files</h1>
             {% include "recording.html" %}
-            {% include "day.html" %}
+            <div id="day-section" hx-target="this" hx-swap="outerHTML">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <button class="btn btn-outline-secondary" {% if prev_day %}hx-get="/?date={{ prev_day }}" hx-select="#day-section" hx-push-url="true"{% else %}disabled{% endif %}>&laquo; Previous Day</button>
+                    <strong class="fs-5">{{ day.strftime("%A, %d %B %Y") }}</strong>
+                    <button class="btn btn-outline-secondary" {% if next_day %}hx-get="/?date={{ next_day }}" hx-select="#day-section" hx-push-url="true"{% else %}disabled{% endif %}>Next Day &raquo;</button>
+                </div>
+                <table class="table table-striped align-middle">
+                    {% for entry in entries %}
+                    {% include "row.html" %}
+                    {% endfor %}
+                </table>
+            </div>
         </div>
     </body>
 </html>
