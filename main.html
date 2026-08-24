@@ -1,39 +1,28 @@
 <html>
+    <head>
+        <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+    </head>
     <body>
         <h1>Audio Files</h1>
-        <form action="" method="post">
-            {%if recording %}
-            Recording Enabled &nbsp&nbsp <button type='submit' name='record' value='stop'>Disable Recording</button>
-            {% else %}
-            Recording Disabled  &nbsp&nbsp <button type='submit' name='record' value='start'>Enable Recording</button>
-            {% endif %}
-        </form>
+        {% include "recording.html" %}
         <table cellpadding="15">
             {% for entry in entries %}
-            <tr>
+            <tr hx-target="this" hx-swap="outerHTML">
                 <td>{{ entry["timestamp"].strftime("%A, %d %B %Y %I:%M%p") }}</td>
                 <td>{{ entry["length"] }}s</td>
                 <td><audio src='./file/{{ entry["basename"] }}' controls='' controlslist='nodownload'></audio></td>
                 <td><a href='./file/{{ entry["basename"] }}'>Download</a></td>
                 <td>
-                    <form action="/file/{{ entry['basename'] }}" method="post">
-                        <button type="submit" name="action" value="delete">Delete</button>
-                    </form>
+                    <button hx-post="/file/{{ entry['basename'] }}" name="action" value="delete">Delete</button>
                 </td>
                 <td>
-                    <form action="/file/{{ entry['basename'] }}" method="post">
-                        <button type="submit" name="action" value="airplane">Airplane</button>
-                    </form>
+                    <button hx-post="/file/{{ entry['basename'] }}" name="action" value="airplane">Airplane</button>
                 </td>
                 <td>
-                    <form action="/file/{{ entry['basename'] }}" method="post">
-                        <button type="submit" name="action" value="dog">Dog</button>
-                    </form>
+                    <button hx-post="/file/{{ entry['basename'] }}" name="action" value="dog">Dog</button>
                 </td>
                 <td>
-                    <form action="/file/{{ entry['basename'] }}" method="post">
-                        <button type="submit" name="action" value="siren">Siren</button>
-                    </form>
+                    <button hx-post="/file/{{ entry['basename'] }}" name="action" value="siren">Siren</button>
                 </td>
             </tr>
             {% endfor %}

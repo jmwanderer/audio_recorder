@@ -1,0 +1,8 @@
+<div hx-target="this">
+  {%if recording %}
+  Recording Enabled &nbsp&nbsp <button hx-post="/" name='record' value='stop'>Disable Recording</button>
+  {% else %}
+  Recording Disabled  &nbsp&nbsp <button hx-post="/" name='record' value='start'>Enable Recording</button>
+  {% endif %}
+</div>
+

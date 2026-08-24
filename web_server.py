@@ -117,8 +117,9 @@ def read_file(filename, request: Request):
             return Response(content=data, media_type='audio/wav')
     raise HTTPException(status_code=404)
 
+
 @app.post("/", response_class=RedirectResponse)
-def post_record(record: Annotated[str, Form()]):
+def post_record(request: Request, record: Annotated[str, Form()]):
     """
     Handle enable and disable recording.
     """
@@ -127,14 +128,18 @@ def post_record(record: Annotated[str, Form()]):
         set_record_setting(True)
     else:
         set_record_setting(False)
-    return RedirectResponse("/", status_code=303)
 
+    return templates.TemplateResponse(
+        request=request,
+        name="recording.html", 
+        context={"recording": record == "start"}
+    )
 
 
 @app.post("/file/{filename}", response_class=RedirectResponse)
 def post_file(filename: str, action: Annotated[str, Form()]):
     """
-    Handle delete file.
+    Handle update for a file
     """
     entry = lookup_file(filename)
     if entry is None:
@@ -158,7 +163,7 @@ def post_file(filename: str, action: Annotated[str, Form()]):
         os.rename(sound_file_path, new_sound_path) 
         os.rename(json_file_path, new_json_path) 
 
-    return RedirectResponse("/", status_code=303)
+    return ""
 
 LOGGING_CONFIG = {
     'version': 1,
