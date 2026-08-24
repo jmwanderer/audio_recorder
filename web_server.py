@@ -27,6 +27,17 @@ templates = Jinja2Templates(directory=".")
 logger = logging.getLogger("uvicorn.error")
 
 
+def clean_files():
+    for entry in os.listdir(auto_record.DATA_DIR):
+        if entry.endswith(".json"):
+            path = os.path.join(auto_record.DATA_DIR, entry)
+            f = open(path, 'r')
+            info = json.loads(f.read())
+            f.close()
+            sound_path = os.path.join(auto_record.DATA_DIR, info["sound_file"])
+            if not os.path.isfile(sound_path):
+                os.remove(path)
+    
 def get_file_list():
     """
     Read the contents of the JSON information files in the data directory
@@ -135,6 +146,18 @@ def post_file(filename: str, action: Annotated[str, Form()]):
         logger.info(f"delete {filename}")
         os.remove(sound_file_path)
         os.remove(json_file_path)
+
+    classes = [ "airplane", "dog", "siren" ]
+    if action in classes:
+        logger.info(f"move {filename} to {action}")
+        class_path = os.path.join(auto_record.DATA_DIR, action)
+        os.makedirs(class_path, exist_ok=True)
+
+        new_sound_path = os.path.join(class_path, entry["sound_file"])
+        new_json_path = os.path.join(class_path, entry["json_file"])
+        os.rename(sound_file_path, new_sound_path) 
+        os.rename(json_file_path, new_json_path) 
+
     return RedirectResponse("/", status_code=303)
 
 LOGGING_CONFIG = {
@@ -162,4 +185,5 @@ LOGGING_CONFIG = {
 
 if __name__ == '__main__':
     print("Connect to http://localhost:3000")
+    clean_files()
     uvicorn.run(app, log_config=LOGGING_CONFIG, host="0.0.0.0", port=3000)

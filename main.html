@@ -20,6 +20,21 @@
                         <button type="submit" name="action" value="delete">Delete</button>
                     </form>
                 </td>
+                <td>
+                    <form action="/file/{{ entry['basename'] }}" method="post">
+                        <button type="submit" name="action" value="airplane">Airplane</button>
+                    </form>
+                </td>
+                <td>
+                    <form action="/file/{{ entry['basename'] }}" method="post">
+                        <button type="submit" name="action" value="dog">Dog</button>
+                    </form>
+                </td>
+                <td>
+                    <form action="/file/{{ entry['basename'] }}" method="post">
+                        <button type="submit" name="action" value="siren">Siren</button>
+                    </form>
+                </td>
             </tr>
             {% endfor %}
         </table>
