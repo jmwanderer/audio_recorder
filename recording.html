@@ -1,8 +1,10 @@
-<div hx-target="this" hx-swap="outerHTML">
+<div hx-target="this" hx-swap="outerHTML" class="d-flex align-items-center gap-2 mb-3">
   {%if recording %}
-  Recording Enabled &nbsp&nbsp <button hx-post="/" name='record' value='stop'>Disable Recording</button>
+  <span class="badge text-bg-success">Recording Enabled</span>
+  <button class="btn btn-sm btn-outline-danger" hx-post="/" name='record' value='stop'>Disable Recording</button>
   {% else %}
-  Recording Disabled  &nbsp&nbsp <button hx-post="/" name='record' value='start'>Enable Recording</button>
+  <span class="badge text-bg-secondary">Recording Disabled</span>
+  <button class="btn btn-sm btn-outline-success" hx-post="/" name='record' value='start'>Enable Recording</button>
   {% endif %}
 </div>
 
