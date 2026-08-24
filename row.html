@@ -5,6 +5,15 @@
         {% elif entry.get("category") == "siren" %}&#128680;
         {% endif %}
     </td>
+    <td>
+        {% if entry.get("category") %}
+            {% if entry.get("confirmed") %}
+            <span class="badge text-bg-success">Confirmed</span>
+            {% else %}
+            <span class="badge text-bg-warning">Tentative</span>
+            {% endif %}
+        {% endif %}
+    </td>
     <td>{{ entry["timestamp"].strftime("%A, %d %B %Y %I:%M%p") }}</td>
     <td>{{ entry["length"] }}s</td>
     <td><audio src='./file/{{ entry["basename"] }}' controls='' controlslist='nodownload'></audio></td>

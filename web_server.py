@@ -69,6 +69,15 @@ def get_file_list():
                 # found. Not persisted - the "category" field, not this, is
                 # what's saved to the sidecar.
                 info["dir"] = dir_path
+
+                # A category is confirmed once the file has actually been
+                # moved into that category's subdirectory. Until then
+                # (e.g. a category set some other way, without a move)
+                # it's only tentative.
+                if info.get("category"):
+                    info["confirmed"] = dir_path == os.path.join(
+                        auto_record.DATA_DIR, info["category"])
+
                 result.append(info)
     result.sort(key=lambda e: e["timestamp"], reverse=True)
     return result
@@ -196,6 +205,7 @@ def post_file(request: Request, filename: str, action: Annotated[str, Form()]):
         os.rename(json_file_path, new_json_path)
 
         entry["category"] = action
+        entry["confirmed"] = True
         return templates.TemplateResponse(
             request=request,
             name="row.html",
