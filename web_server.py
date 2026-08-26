@@ -27,7 +27,7 @@ templates = Jinja2Templates(directory=".")
 logger = logging.getLogger("uvicorn.error")
 
 # Category subdirectories under DATA_DIR that a recording can be classified into
-CLASSES = [ "airplane", "dog", "siren" ]
+CLASSES = [ "airplane", "dog", "siren", "door" ]
 
 
 def clean_files():
