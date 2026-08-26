@@ -4,6 +4,8 @@
         {% elif entry.get("category") == "dog" %}&#128021;
         {% elif entry.get("category") == "siren" %}&#128680;
         {% elif entry.get("category") == "door" %}&#x1F6AA;
+        {% elif entry.get("category") == "snore" %}&#x1F634;
+        {% elif entry.get("category") == "unknown" %}&#x1F937;
         {% endif %}
     </td>
     <td>
@@ -29,6 +31,7 @@
                 <option value="dog">Dog</option>
                 <option value="siren">Siren</option>
                 <option value="door">Door</option>
+                <option value="snore">Snore</option>
             </select>
             <button class="btn btn-sm btn-primary" hx-post="/file/{{ entry['basename'] }}" hx-include="previous select">Set Category</button>
         </div>
