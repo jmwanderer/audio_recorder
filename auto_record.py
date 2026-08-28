@@ -525,15 +525,21 @@ if __name__ == "__main__":
 
     logger.info("Starting session...")
     session = AutoRecordSession()
-    enabled = True
+
+    # Default enabled depends on signal file
+    path = os.path.join(DATA_DIR, RECORD_ENABLED_FILE)
+    enabled = os.path.isfile(path)
+
     if len(sys.argv) > 1:
         if sys.argv[1].lower() == "calibrate":
             session.calibrate()
             sys.exit(0)
-        elif sys.argv[1].lower() == "disabled":
+        elif sys.argv[1].lower() == "disable":
             enabled = False
+        elif sys.argv[1].lower() == "enable":
+            enabled = True
         else:
-            print("usage: [debug] [calibrate | disabled]")
+            print("usage: [debug] [calibrate | disable | enable ]")
             sys.exit(-1)
 
     # Run the recording
