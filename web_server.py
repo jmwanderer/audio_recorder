@@ -240,4 +240,11 @@ LOGGING_CONFIG = {
 if __name__ == '__main__':
     print("Connect to http://localhost:3000")
     clean_files()
-    uvicorn.run(app, log_config=LOGGING_CONFIG, host="0.0.0.0", port=3000)
+    uvicorn.run(
+        app,
+        log_config=LOGGING_CONFIG,
+        host="0.0.0.0",
+        port=3000,
+        proxy_headers=True,
+        forwarded_allow_ips="*",
+    )
