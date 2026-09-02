@@ -19,10 +19,21 @@
     </td>
     <td>{{ entry["timestamp"].strftime("%A, %d %B %Y %I:%M%p") }}</td>
     <td>{{ entry["length"] }}s</td>
-    <td><audio src='./file/{{ entry["basename"] }}' controls='' controlslist='nodownload'></audio></td>
-    <td><a class="btn btn-sm btn-outline-primary" href='./file/{{ entry["basename"] }}'>Download</a></td>
+    <td><audio
+        src='{{ url_for('read_file', filename=entry["basename"]) }}'
+        controls='' controlslist='nodownload'></audio>
+    </td>
+    <td><a
+        class="btn btn-sm btn-outline-primary"
+        href='{{ url_for("read_file", filename=entry["basename"]) }}'>
+        Download
+        </a>
+    </td>
     <td>
-        <button class="btn btn-sm btn-outline-danger" hx-post="/file/{{ entry['basename'] }}" name="action" value="delete">Delete</button>
+        <button
+            class="btn btn-sm btn-outline-danger"
+            hx-post="{{ url_for('post_file', filename= entry['basename']) }}"
+            name="action" value="delete">Delete</button>
     </td>
     <td>
         <div class="d-flex gap-2">
@@ -33,7 +44,10 @@
                 <option value="door">Door</option>
                 <option value="snore">Snore</option>
             </select>
-            <button class="btn btn-sm btn-primary" hx-post="/file/{{ entry['basename'] }}" hx-include="previous select">Set Category</button>
+            <button
+                class="btn btn-sm btn-primary"
+                hx-post="{{ url_for('post_file', filename=entry['basename']) }}"
+                hx-include="previous select">Set Category</button>
         </div>
     </td>
 </tr>

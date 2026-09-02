@@ -113,6 +113,21 @@ def set_record_setting(recording: bool):
             os.remove(path)
 
 
+@app.middleware("http")
+async def handle_x_forwarded_prefix(request: Request, call_next):
+    """
+    Use a dynamic prefix addition if running behind a proxy
+    """
+    # Extract the prefix from the proxy header
+    prefix = request.headers.get("X-Forwarded-Prefix", "")
+
+    if prefix:
+        # Dynamically set the root path for URL generation and docs
+        request.scope["root_path"] = prefix
+
+    return await call_next(request)
+
+
 @app.get("/", response_class=HTMLResponse)
 def main_page(request: Request, date: Optional[str] = None):
     """
@@ -240,6 +255,7 @@ LOGGING_CONFIG = {
 if __name__ == '__main__':
     print("Connect to http://localhost:3000")
     clean_files()
+    # Configuration should only run on a fully trusted network
     uvicorn.run(
         app,
         log_config=LOGGING_CONFIG,
